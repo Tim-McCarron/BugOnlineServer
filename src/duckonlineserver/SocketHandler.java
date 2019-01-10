@@ -23,7 +23,7 @@ public class SocketHandler implements Runnable {
     private long start;
     private long elapsed;
     private long wait;
-    private long targetTick = 1000;
+    private long targetTick = 100;
     private boolean running;
     
     public SocketHandler(Socket sock, String index) {
