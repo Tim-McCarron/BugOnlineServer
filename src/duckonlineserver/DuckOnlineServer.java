@@ -10,7 +10,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 /**
  *
@@ -28,7 +31,8 @@ public class DuckOnlineServer {
         SocketHandler currentSock;
         Thread newThread;
         String newIndex;
-
+        ArrayList<String> indicesToRemove = new ArrayList<String>();
+        
         try {
             serverSocket = new ServerSocket(9999);
         } catch (IOException e) {
@@ -38,16 +42,46 @@ public class DuckOnlineServer {
             
         while (true) {
             try {
+                
+                Set<String> keys = clients.keySet();
+                Iterator it = keys.iterator();
+                indicesToRemove.clear();
+                while (it.hasNext()) {
+                    String key = (String) it.next();
+                    Socket thisSock = clients.get(key).getSocket();
+                    if (thisSock.isClosed()) {
+                        indicesToRemove.add(key);
+                    }
+                    
+                }
+                for (int i = 0; i < indicesToRemove.size(); i++) {
+                    clients.remove(indicesToRemove.get(i));
+                    System.out.println("removed sock " + indicesToRemove.get(i));
+                }
+                
+                System.out.println("updated client size ---> " + clients.size());
+                
+//                clients.forEach((String index, SocketHandler thisClient) -> {
+//                    System.out.println("looping through client -->" + thisClient.index);
+//                    Socket thisSock = thisClient.getSocket();
+//                    if (thisSock.isClosed()) {
+//                        indexToRemove = index;
+//                    }
+//                });
+//                
+//                clients.remove(indexToRemove);
+                
                 socket = serverSocket.accept();
                 // new thread for a client
                 System.out.println("Client connected");
                 newIndex = getRandomHexString(10);
-                System.out.println(newIndex);
+                System.out.println("new sock index " + newIndex);
                 currentSock = new SocketHandler(socket, newIndex);
                 newThread = new Thread(currentSock);
                 newThread.start();                
                 clients.put(newIndex, currentSock);
-//                System.out.println(clients.size());
+                
+                
             } catch (IOException e) {
                 System.out.println("I/O error: " + e);
             }
@@ -61,8 +95,8 @@ public class DuckOnlineServer {
         while(sb.length() < numchars){
             sb.append(Integer.toHexString(r.nextInt()));
         }
-
         return sb.toString().substring(0, numchars);
     }
+    
     
 }
