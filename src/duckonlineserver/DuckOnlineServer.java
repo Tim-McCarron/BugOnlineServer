@@ -61,16 +61,6 @@ public class DuckOnlineServer {
                 
                 System.out.println("updated client size ---> " + clients.size());
                 
-//                clients.forEach((String index, SocketHandler thisClient) -> {
-//                    System.out.println("looping through client -->" + thisClient.index);
-//                    Socket thisSock = thisClient.getSocket();
-//                    if (thisSock.isClosed()) {
-//                        indexToRemove = index;
-//                    }
-//                });
-//                
-//                clients.remove(indexToRemove);
-                
                 socket = serverSocket.accept();
                 // new thread for a client
                 System.out.println("Client connected");

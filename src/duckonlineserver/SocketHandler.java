@@ -44,9 +44,8 @@ public class SocketHandler implements Runnable {
                     wait = targetTick - elapsed / 1000000;
                     if (wait < 0) wait = 5;
                     Thread.sleep(wait);
-                    
                     System.out.println(in.readUTF());
-                    out.writeUTF("ticked");
+                    out.writeUTF("[{\"id\" : \"213231\",\"name\" : \"duck master 9\",\"x\" : \"100\",\"y\" : \"150\"},{\"id\" : \"132589\",\"name\" : \"very cool duck\",\"x\" : \"250\",\"y\" : \"400\"}]");
                 } catch(Exception e) {
 //                    e.printStackTrace();
                     running = false;
