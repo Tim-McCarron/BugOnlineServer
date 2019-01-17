@@ -45,7 +45,7 @@ public class SocketHandler implements Runnable {
                     if (wait < 0) wait = 5;
                     Thread.sleep(wait);
                     System.out.println(in.readUTF());
-                    out.writeUTF("[{\"id\" : \"213231\",\"name\" : \"duck master 9\",\"x\" : \"100\",\"y\" : \"150\"},{\"id\" : \"132589\",\"name\" : \"very cool duck\",\"x\" : \"250\",\"y\" : \"400\"}]");
+                    out.writeUTF("213231:duck master 9:100:150/132589:very cool duck:250:400");
                 } catch(Exception e) {
 //                    e.printStackTrace();
                     running = false;
