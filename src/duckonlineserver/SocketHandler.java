@@ -14,17 +14,17 @@ import java.net.Socket;
  */
 public class SocketHandler implements Runnable {
     private Socket client;
+    private String clientId;
     public String index;
     private long start;
     private long elapsed;
     private long wait;
-    private long targetTick = 1000;
+    private long targetTick = 80;
     private boolean running;
     
     public SocketHandler(Socket sock, String index) {
         client = sock;
         this.index = index;
-        System.out.println("instantiated");
         running = true;
     }
     
@@ -37,6 +37,9 @@ public class SocketHandler implements Runnable {
             System.out.println("Just connected to " + client.getRemoteSocketAddress());
             DataInputStream in = new DataInputStream(client.getInputStream());
             DataOutputStream out = new DataOutputStream(client.getOutputStream());
+            int counter = 0;
+            clientId = in.readUTF();
+            System.out.println(clientId);
             while (running) {
                 try {
                     start = System.nanoTime();         
@@ -45,7 +48,8 @@ public class SocketHandler implements Runnable {
                     if (wait < 0) wait = 5;
                     Thread.sleep(wait);
                     System.out.println(in.readUTF());
-                    out.writeUTF("213231:duck master 9:100:150/132589:very cool duck:250:400");
+                    out.writeUTF("213231:duck master 9:" + counter + ":150/132589:very cool duck:250:400");
+                    counter = counter + 5;
                 } catch(Exception e) {
 //                    e.printStackTrace();
                     running = false;
