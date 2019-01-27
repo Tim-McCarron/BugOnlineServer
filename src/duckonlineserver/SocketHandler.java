@@ -47,11 +47,13 @@ public class SocketHandler implements Runnable {
                     wait = targetTick - elapsed / 1000000;
                     if (wait < 0) wait = 5;
                     Thread.sleep(wait);
-                    System.out.println(in.readUTF());
-                    out.writeUTF("213231:duck master 9:" + counter + ":150/132589:very cool duck:250:400");
+                    String[] inbound = in.readUTF().split(":");
+                    writeGamestate(clientId, Double.parseDouble(inbound[0]), Double.parseDouble(inbound[1]));
+                    System.out.println(Gamestate.getPayload());
+                    out.writeUTF(Gamestate.getPayload());
                     counter = counter + 5;
                 } catch(Exception e) {
-//                    e.printStackTrace();
+                    System.out.println("closing status... " + Gamestate.removeUnit(clientId));
                     running = false;
                 }
             }
@@ -60,6 +62,10 @@ public class SocketHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    private void writeGamestate(String id, double x, double y) {
+        Gamestate.submitState(id, x, y);
     }
     
     
