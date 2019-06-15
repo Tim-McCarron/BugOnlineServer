@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+
 /**
  *
  * @author abe
@@ -19,12 +20,14 @@ public class SocketHandler implements Runnable {
     private long start;
     private long elapsed;
     private long wait;
-    private long targetTick = 80;
+    private long targetTick = 60;
     private boolean running;
+    private CLI gui;
     
-    public SocketHandler(Socket sock, String index) {
+    public SocketHandler(Socket sock, String index, CLI gui) {
         client = sock;
         this.index = index;
+        this.gui = gui;
         running = true;
     }
     
@@ -34,26 +37,29 @@ public class SocketHandler implements Runnable {
     
     public void run() {
         try {
-            System.out.println("Just connected to " + client.getRemoteSocketAddress());
+            gui.pushOutput("Just connected to " + client.getRemoteSocketAddress());
             DataInputStream in = new DataInputStream(client.getInputStream());
             DataOutputStream out = new DataOutputStream(client.getOutputStream());
             int counter = 0;
             clientId = in.readUTF();
-            System.out.println(clientId);
+            gui.pushOutput("new clientId: " + clientId);
             while (running) {
                 try {
                     start = System.nanoTime();         
-                    elapsed = System.nanoTime() - start;
-                    wait = targetTick - elapsed / 1000000;
+                    
                     if (wait < 0) wait = 5;
                     Thread.sleep(wait);
                     String[] inbound = in.readUTF().split(":");
-                    writeGamestate(clientId, Double.parseDouble(inbound[0]), Double.parseDouble(inbound[1]));
-                    System.out.println(Gamestate.getPayload());
+                    
+                    if (inbound.length == 3) {
+                        writeGamestate(clientId, Double.parseDouble(inbound[0]), Double.parseDouble(inbound[1]), Double.parseDouble(inbound[2]));
+                    }
                     out.writeUTF(Gamestate.getPayload());
                     counter = counter + 5;
+                    elapsed = System.nanoTime() - start;
+                    wait = targetTick - elapsed / 1000000;
                 } catch(Exception e) {
-                    System.out.println("closing status... " + Gamestate.removeUnit(clientId));
+                    gui.pushOutput("closing status... " + Gamestate.removeUnit(clientId) + " for clientId: " + clientId);
                     running = false;
                 }
             }
@@ -64,8 +70,9 @@ public class SocketHandler implements Runnable {
         }
     }
     
-    private void writeGamestate(String id, double x, double y) {
-        Gamestate.submitState(id, x, y);
+    private void writeGamestate(String id, double x, double y, double z) {
+        System.out.println("ID HERE " + id);
+        Gamestate.submitState(id, x, y, z);
     }
     
     

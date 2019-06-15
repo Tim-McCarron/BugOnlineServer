@@ -11,7 +11,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -32,17 +31,21 @@ public class DuckOnlineServer {
         Thread newThread;
         String newIndex;
         ArrayList<String> indicesToRemove = new ArrayList<String>();
-        
+        CLI gui = new CLI(800, 600);
+
         try {
             serverSocket = new ServerSocket(9999);
         } catch (IOException e) {
             e.printStackTrace();
 
         }
-            
-        while (true) {
+        
+        Thread cli = new Thread(gui);
+        cli.start();
+        gui.pushOutput("Initializing server..");
+        while (gui.getIsRunning()) {
             try {
-                
+                // do this bull shit just to forEach through the fckin hashmap
                 Set<String> keys = clients.keySet();
                 Iterator it = keys.iterator();
                 indicesToRemove.clear();
@@ -66,7 +69,7 @@ public class DuckOnlineServer {
                 System.out.println("Client connected");
                 newIndex = getRandomHexString(10);
                 System.out.println("new sock index " + newIndex);
-                currentSock = new SocketHandler(socket, newIndex);
+                currentSock = new SocketHandler(socket, newIndex, gui);
                 newThread = new Thread(currentSock);
                 newThread.start();                
                 clients.put(newIndex, currentSock);

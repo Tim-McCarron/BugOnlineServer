@@ -15,10 +15,10 @@ public class Player extends Unit {
     public Player() {
         super();
     }
-    public Player(String id, double x, double y, String name, String sprite, double speed, boolean me) {
-        super(x, y, name, sprite, id, speed);
+    public Player(String id, double x, double y, double z, String name, String sprite, double speed, boolean me) {
+        super(x, y, z, name, sprite, id, speed);
         this.me = me;
     }
-    
+
     
 }

@@ -19,28 +19,43 @@ public class Gamestate {
         return mapletonPark;
     }
     
+//    public static ArrayList getState(String map) {
+//        return mapletonPark;
+//    }
+    
     public static String getPayload() {
-        String payload = "";
-        for (int i = 0; i < mapletonPark.size(); i++) {
-            payload = payload + mapletonPark.get(i).getId() + ":" + mapletonPark.get(i).getName() + ":" + mapletonPark.get(i).getX() + ":" + mapletonPark.get(i).getY();
-            if (i < mapletonPark.size() - 1) {
-                payload = payload + "/";
-            }
-        }
-        System.out.println(payload);
+        String payload = "13h111:coolguy:5.0:0.0:0.0/3j9gl1:notsocoolGUy:7.0:0.0:0.0";
+//        String payload = "";
+//        for (int i = 0; i < mapletonPark.size(); i++) {
+//            String name;
+//            if (mapletonPark.get(i).getName() != null) {
+//                name = mapletonPark.get(i).getName();
+//            } else {
+//                name = "defaultName";
+//            }
+//            payload = payload + mapletonPark.get(i).getId() + ":" + name + ":" + mapletonPark.get(i).getX() + ":" + 
+//                mapletonPark.get(i).getY() + ":" + mapletonPark.get(i).getZ();
+//            if (i < mapletonPark.size() - 1) {
+//                payload = payload + "/";
+//            }
+//        }
+        System.out.println("here is outbound payload " + payload);
         return payload;
     }
     
-    public static void addUnit(Unit unit) {
-         
-     
+    public static void addPlayer(String id, double x, double y, double z) {
+        Player player = new Player();
+        player.setId(id);
+        player.setX(x);
+        player.setY(y);
+        player.setY(z);
+        mapletonPark.add(player);
     }
     
     public static boolean removeUnit(String unitId) {
         int index = -1;
         for (int i = 0; i < mapletonPark.size(); i++) {
             if (unitId == mapletonPark.get(i).getId()) {
-                
                 index = i;
             }
         }
@@ -52,15 +67,21 @@ public class Gamestate {
         }
     }
     
-    public static void submitState(String id, double x, double y) {
+    public static void submitState(String id, double x, double y, double z) {
+        // submit player id and location stuff
+        // if exists in arraylist then set data else create new player obj and push
+        System.out.println(id);
         for (int i = 0; i < mapletonPark.size(); i++) {
             if (mapletonPark.get(i).getId() == id) {
                 double newX = mapletonPark.get(i).getX();
                 double newY = mapletonPark.get(i).getY();
+                double newZ = mapletonPark.get(i).getZ();
                 newX += x;
                 newY += y;
-                mapletonPark.get(i).setX(newX);
-                mapletonPark.get(i).setY(newY);
+                newZ += z;
+                mapletonPark.get(i).setX(Double.parseDouble(String.format("%.2f", newX)));
+                mapletonPark.get(i).setY(Double.parseDouble(String.format("%.2f", newY)));
+                mapletonPark.get(i).setZ(Double.parseDouble(String.format("%.2f", newZ)));
                 return;
             }
         }
@@ -68,6 +89,7 @@ public class Gamestate {
         player.setId(id);
         player.setX(x);
         player.setY(y);
+        player.setZ(z);
         mapletonPark.add(player);
     }
     
