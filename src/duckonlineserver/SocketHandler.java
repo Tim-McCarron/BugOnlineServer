@@ -46,13 +46,11 @@ public class SocketHandler implements Runnable {
             while (running) {
                 try {
                     start = System.nanoTime();         
-                    
                     if (wait < 0) wait = 5;
                     Thread.sleep(wait);
                     String[] inbound = in.readUTF().split(":");
-                    
-                    if (inbound.length == 3) {
-                        writeGamestate(clientId, Double.parseDouble(inbound[0]), Double.parseDouble(inbound[1]), Double.parseDouble(inbound[2]));
+                    if (inbound.length == 4) {
+                        writeGamestate(clientId, Double.parseDouble(inbound[0]), Double.parseDouble(inbound[1]), Double.parseDouble(inbound[2]), Float.parseFloat(inbound[3]));
                     }
                     out.writeUTF(Gamestate.getPayload());
                     counter = counter + 5;
@@ -70,9 +68,8 @@ public class SocketHandler implements Runnable {
         }
     }
     
-    private void writeGamestate(String id, double x, double y, double z) {
-        System.out.println("ID HERE " + id);
-        Gamestate.submitState(id, x, y, z);
+    private void writeGamestate(String id, double x, double y, double z, float d) {
+        Gamestate.submitState(id, x, y, z, d);
     }
     
     

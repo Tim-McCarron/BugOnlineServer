@@ -20,20 +20,12 @@ public class CLI extends javax.swing.JFrame implements Runnable {
     private int height;
     private boolean running;
     
-    private HashMap<String, Method> commands;
-    
     public CLI(int width, int height) {
         
         initComponents();
         this.width = width;
         this.height = height;
         running = true;
-        commands = new HashMap<String, Method>();
-        try {
-            commands.put("add", this.getClass().getMethod("commandAddUnit", String.class));
-        } catch (NoSuchMethodException e) {
-            System.out.println(e.getStackTrace());
-        }
         
 //        commands.add("add");
 //        commands.add("gamestate");
@@ -142,16 +134,10 @@ public class CLI extends javax.swing.JFrame implements Runnable {
         String command = cli_input.getText().replace("\n", "").replace("\r", "");
         String[] split = command.split(" ");
         if (split.length > 0) {
-            if (commands.containsKey(split[0])) {
-                Method thisCmd = commands.get(split[0]);
-                try {
-                    // hope u high as fuck cause we smokin methods in here bitch 402
-                    thisCmd.invoke(this, command);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                pushOutput(command + " is not a command!!\n");
+            if (split[0].equals("add")) {
+                commandAddUnit(split);
+            } else if (split[0].equals("remove")) {
+                commandRemoveUnit(split);
             }
         }
         cli_input.setEnabled(true);
@@ -159,9 +145,29 @@ public class CLI extends javax.swing.JFrame implements Runnable {
     }
     
     // commands
-    public void commandAddUnit(String parameters) {
-        
+    private void commandAddUnit(String[] parameters) {
+        if (parameters.length > 4) {
+            String id = parameters[1];
+            double x = Double.parseDouble(parameters[2]);
+            double y = Double.parseDouble(parameters[3]);
+            double z = Double.parseDouble(parameters[4]);
+            float direction = 0;
+            if (parameters.length > 5) {
+                direction = Float.parseFloat(parameters[5]);
+            }
+            Gamestate.addPlayer(id, x, y, z, direction);
+            pushOutput("Added player: " + id + "at location:(xyz) " + x + "-" + y + "-" + z);
+        } else {
+            pushOutput("Invalid params for add. Proper syntax is.... ID X Y Z");
+        }
     }
+    
+    private void commandRemoveUnit(String[] parameters) {
+        if (parameters.length == 2) {
+            Gamestate.removeUnit(parameters[1]);
+            pushOutput("Removed player: " + parameters[1]);
+        }
+    } 
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
