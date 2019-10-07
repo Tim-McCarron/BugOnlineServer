@@ -55,10 +55,14 @@ public class Gamestate {
     public static boolean removeUnit(String unitId) {
         int index = -1;
         for (int i = 0; i < mapletonPark.size(); i++) {
-            if (unitId == mapletonPark.get(i).getId()) {
+            System.out.println("id to find " + unitId);
+            System.out.println("id to check " + mapletonPark.get(i).getId());
+            if (unitId.equals(mapletonPark.get(i).getId())) {
+                System.out.println("ok?");
                 index = i;
             }
         }
+        System.out.println("index to remove " + index);
         if (index == -1) {
             return false;
         } else {

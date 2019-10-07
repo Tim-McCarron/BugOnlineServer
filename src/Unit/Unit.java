@@ -9,6 +9,7 @@ public class Unit {
     private double x;
     private double y;
     private double z;
+    private boolean airborne;
     private float direction;
     private String name;
     private String spritePath;
@@ -47,6 +48,10 @@ public class Unit {
         return spritePath;
     }
     
+    public boolean getIsAirborne() {
+        return airborne;
+    }
+    
     public String getId() {
         return id;
     }
@@ -73,6 +78,10 @@ public class Unit {
     
     public float getDir() {
         return this.direction;
+    }
+    
+    public void setIsAirborne(boolean ab) {
+        this.airborne = ab;
     }
     
     public void setName(String name) {
